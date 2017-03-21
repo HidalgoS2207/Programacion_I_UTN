@@ -193,7 +193,7 @@ int main()
                         scanf("%d" , &index);    
                     }
 
-                    if((agenda + index)->legajo != -1)
+                    if((agenda + index - 1)->legajo != -1)
                     {
                         printf("\n----- PERSONA %d -----\n\n" , index);
                         printf("\nNombre: %s \nApellido: %s \nLegajo Nro: %d\n" , (agenda + index - 1)->nombre , (agenda + index - 1)->apellido , (agenda + index - 1)->legajo);
