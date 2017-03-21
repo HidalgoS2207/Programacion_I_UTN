@@ -127,6 +127,23 @@ int find_free_spot(struct Agenda * agenda)
     return -1;
 }
 
+void optimizar_espacio(struct Agenda * agenda , int index)
+{
+    for(int i = index + 1; i < AGENDA_MAX_SIZE;i++)
+    {
+        if((agenda + i)->legajo != -1)
+        {
+            (agenda + i - 1)->legajo = (agenda + i)->legajo;
+            strcpy((agenda + i - 1)->nombre , (agenda + i)->nombre);
+            strcpy((agenda + i - 1)->apellido, (agenda + i)->apellido);
+
+            (agenda + i)->legajo = -1;
+            memset((agenda + i)->nombre , '\0' , 128);
+            memset((agenda + i)->apellido , '\0' , 128);
+        }
+    }
+}
+
 int main()
 {
     printf("\n\n---------------------------------------------------------\n       EJERCICIO CLASE 007\n\n");
@@ -190,7 +207,7 @@ int main()
 
                     if(index < 0)
                     {
-                        printf("\n\nError. No hay mas espacio en la agenda. Intente primero elinando archivos no necesarios.\n");
+                        printf("\n\nError. No hay mas espacio en la agenda. Intente primero eliminando archivos no necesarios.\n");
                     }
                     else
                     {
@@ -253,6 +270,11 @@ int main()
                             memset((agenda + index - 1)->apellido , '\0' , 128);
                             (agenda + index - 1)->legajo = -1;
 
+                            if(index - 1 < AGENDA_MAX_SIZE - 1)
+                            {
+                                optimizar_espacio(agenda , index - 1);  
+                            }
+                            
                             printf("\nOperacion realizada con exito.\n\n");
                         }
                         else
