@@ -141,6 +141,10 @@ void optimizar_espacio(struct Agenda * agenda , int index)
             memset((agenda + i)->nombre , '\0' , 128);
             memset((agenda + i)->apellido , '\0' , 128);
         }
+        else
+        {
+            break;
+        }
     }
 }
 
