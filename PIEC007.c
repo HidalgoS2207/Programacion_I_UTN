@@ -103,14 +103,69 @@ void ingreso_datos(struct Agenda * agenda_p)
 
 void listar_todas(struct Agenda * agenda_p)
 {
-    for(int i = 0 ; i < AGENDA_MAX_SIZE ; i++)
+    int opcion = 0;
+    int aux_index = AGENDA_MAX_SIZE - 1;
+    int min_pos = 0;
+    int min_num = INT_MAX;
+
+    printf("\n-------------------------\nElija una Opcion: \n\n1 - Ordenar por indice\n2 - Ordenar alfabeticamente segun apellido de las personas\n\n->");
+    scanf("%d" , &opcion);
+
+    while(opcion < 1 || opcion > 2)
     {
-        if((agenda_p + i)->legajo != -1)
+        printf("\n-------------------------\nError. Elija una Opcion: \n\n1 - Ordenar por indice\n2 - Ordenar alfabeticamente segun apellido de las personas\n\n->");
+        scanf("%d" , &opcion);
+    }
+
+    if(opcion == 1)
+    {
+        for(int i = 0 ; i < AGENDA_MAX_SIZE ; i++)
         {
-            printf("\n----- PERSONA %d -----\n\n" , i + 1);
-            printf("\nNombre: %s \nApellido: %s \nLegajo Nro: %d\n" , (agenda_p + i)->nombre , (agenda_p + i)->apellido , (agenda_p + i)->legajo);
-            printf("\n----------------------\n\n");
+            if((agenda_p + i)->legajo != -1)
+            {
+                printf("\n----- PERSONA %d -----\n\n" , i + 1);
+                printf("\nNombre: %s \nApellido: %s \nLegajo Nro: %d\n" , (agenda_p + i)->nombre , (agenda_p + i)->apellido , (agenda_p + i)->legajo);
+                printf("\n----------------------\n\n");
+            }
         }
+    }
+    else
+    {
+        for(int i = 0 ; i < AGENDA_MAX_SIZE ; i++)
+        {
+            if((agenda_p + i)->legajo == -1)
+            {
+                aux_index = i - 1;
+
+                break;
+            }
+        }
+
+        int * checker = (int*)malloc (aux_index + 1);
+        memset(checker , 0 , sizeof(int)*(aux_index + 1));
+        
+        for(int i = 0 ; i < aux_index +1  ; i++)
+        {
+            for(int j = 0 ; j < aux_index + 1 ; j++)
+            {
+                if((((agenda_p + j)->apellido)[0] < min_num) && (!*(checker + j)))
+                {
+                    min_num = ((agenda_p + j)->apellido)[0];
+                    min_pos = j;
+                }
+            }
+
+            *(checker + min_pos) = 1;
+
+            printf("\n----- PERSONA %d -----\n\n" , min_pos + 1);
+            printf("\nNombre: %s \nApellido: %s \nLegajo Nro: %d\n" , (agenda_p + min_pos)->nombre , (agenda_p + min_pos)->apellido , (agenda_p + min_pos)->legajo);
+            printf("\n----------------------\n\n");
+
+            min_num = INT_MAX;
+            min_pos = 0;
+        }
+
+        free(checker);
     }
 }
 
@@ -193,7 +248,7 @@ int main()
                         scanf("%d" , &index);    
                     }
 
-                    if((agenda + index - 1)->legajo != -1)
+                    if((agenda + index)->legajo != -1)
                     {
                         printf("\n----- PERSONA %d -----\n\n" , index);
                         printf("\nNombre: %s \nApellido: %s \nLegajo Nro: %d\n" , (agenda + index - 1)->nombre , (agenda + index - 1)->apellido , (agenda + index - 1)->legajo);
