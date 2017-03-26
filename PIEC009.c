@@ -1,9 +1,7 @@
 //#include "utn.h"
 
-//banca quebrada
-//muestra de puntajes obtenidos
-//posible bug en la premiacion cuando un jugador quedo descartado
-//cuando se oprime 4 para ver el esta de los jugadores debe decir OPONENTES en vez de JUGADORES
+//ir mostrando que cartas reciben los oponentes si deciden que esa carta sea visible
+//mostrar todas las cartas del oponente si queda fuera de la partida.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -456,7 +454,7 @@ int update(int * state ,int * turno,int * turno_oponente, struct Jugador * banca
                         case 4:
                             for( i = 0; i < oponentes ; i++)
                             {
-                                printf("\n---------------\nJUGADOR %d\n" , i + 1);
+                                printf("\n---------------\nOPONENTE %d\n" , i + 1);
 
                                 for( j = 0; j < (op_lista + i)->cantidad_cartas;j++)
                                 {
@@ -510,11 +508,10 @@ int update(int * state ,int * turno,int * turno_oponente, struct Jugador * banca
                         }
                     }
 
-                    if(!(op_lista + (*turno_oponente))->estado)
-                    {
-                        //banca->presupuesto += (op_lista + (*turno_oponente))->apuesta_realizada;
-                        (op_lista + (*turno_oponente))->apuesta_realizada = 0;
-                    }
+                    // if(!(op_lista + (*turno_oponente))->estado)
+                    // {
+                    //     (op_lista + (*turno_oponente))->apuesta_realizada = 0;
+                    // }
                 }
                 else
                 {
@@ -565,6 +562,14 @@ int update(int * state ,int * turno,int * turno_oponente, struct Jugador * banca
                 memset(dif_oponentes, -1 ,sizeof(float) * 6 );
                 float dif_jugador_1 = -1;
 
+                printf("\n--------------------------------------\n\nPUNTAJES  |   APUESTA   |   SALDO\n\n");
+                printf("\nBANCA --> %.1f Puntos   |    Fondo de la Banca --->   $%.1f   \n" , (banca)->suma_cartas , (banca)->presupuesto);
+                for(i = 0; i < oponentes; i++)
+                {
+                    printf("\nOPONENTE %d --> %.1f Puntos  |  Aposto $%.1f  |  Posee $%.1f  \n" , i + 1 ,(op_lista + i)->suma_cartas , (op_lista + i)->apuesta_realizada ,(op_lista + i)->presupuesto );
+                }
+                printf("\nJUGADOR 1 --> %.1f Puntos  |  Aposto $%.1f  |  Posee $%.1f   \n" , (jugador_1)->suma_cartas ,(jugador_1)->apuesta_realizada , (jugador_1)->presupuesto );
+
                 if((banca)->suma_cartas <= 7.5)
                 {
                     dif_banca = 7.5 - (banca)->suma_cartas;
@@ -574,7 +579,7 @@ int update(int * state ,int * turno,int * turno_oponente, struct Jugador * banca
                 {
                     if((op_lista + i)->estado)
                     {
-                        dif_oponentes[i] = 7.5 - (op_lista)->suma_cartas;
+                        dif_oponentes[i] = 7.5 - (op_lista + i)->suma_cartas;
 
                         counter++;
                     }
@@ -622,7 +627,7 @@ int update(int * state ,int * turno,int * turno_oponente, struct Jugador * banca
 
                         if(counter == 0)
                         {
-                            printf("\n\nNingun jugador sumo por debajo de los 7.5 puntos.\n\n");
+                            printf("\n\nNingun jugador sumo por debajo o igual a 7.5 puntos.\n\n");
                         }
                     }
                     else
@@ -673,7 +678,6 @@ int main()
     int game_state = 0;
     int turno_J1 = 0;
     int turno_oponente = 0;
-    int bolsillo = 1000;
     int oponentes = 0;
     struct Jugador * op_lista = NULL;
     struct Jugador jugador_1;
@@ -727,7 +731,7 @@ int main()
     inicializar_jugador(&jugador_1);
     inicializar_jugador(&banca);
 
-    banca.presupuesto = 5000;
+    banca.presupuesto = 1000;
 
     //loop principal del juego
     while(!game_over && otra_partida)
@@ -745,7 +749,7 @@ int main()
                 scanf("%d", &otra_partida);
             }
 
-            if(otra_partida && jugador_1.presupuesto >= 10)
+            if(otra_partida && jugador_1.presupuesto >= 10 && banca.presupuesto > 0)
             {
                 game_state = 0;
                 reset_cartas(cartas);
@@ -769,6 +773,10 @@ int main()
                 game_over = 1;
 
                 printf("\n\nUsted no dispone de fondos suficientes para continuar jugando en esta sesion.\n\n--------------------------------------\n PROGRAMA TERMINADO");
+            }
+            else if(banca.presupuesto == 0 && otra_partida)
+            {
+                printf("\n\nLa banca no dispone de fondos suficientes para continuar esta sesion.\n\n--------------------------------------\n PROGRAMA TERMINADO");
             }
         }
         else if(game_over < 0)
