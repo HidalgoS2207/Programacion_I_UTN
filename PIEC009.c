@@ -679,7 +679,7 @@ int main()
     int turno_J1 = 0;
     int turno_oponente = 0;
     int oponentes = 0;
-    struct Jugador * op_lista = NULL;
+    struct Jugador op_lista[6];
     struct Jugador jugador_1;
     struct Jugador banca;
 
@@ -705,8 +705,6 @@ int main()
     if(oponentes > 1)
     {
         oponentes--;
-
-        op_lista = (struct Jugador*) malloc(oponentes);
 
         for( i = 0 ; i < oponentes;i++)
         {
@@ -789,18 +787,15 @@ int main()
     }
     //~loop principal del juego
 
-	if (op_lista != NULL)
-	{
-		for ( i = 0; i < oponentes; i++)
-		{
-			for ( j = 0; j < 12; j++)
-			{
-				((op_lista + i)->cartas_jugador)[j] = NULL;
-			}
-		}
+    reset_cartas(cartas);
 
-		free(op_lista);
-	}
+    for( i = 0 ; i < oponentes ; i++)
+    {
+        reset_jugadores(op_lista + i);
+    }
+
+    reset_jugadores(&jugador_1);
+    reset_jugadores(&banca);
 	
     return 0;
 }
