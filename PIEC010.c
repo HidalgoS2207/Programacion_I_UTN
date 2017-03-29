@@ -4,12 +4,76 @@
 
 int verificador_posicion(int * tablero)
 {
-    return 0;
+    int i = 0;
+
+    for(i = 0; i < 8; i++)
+    {
+        if(*(tablero + i) != i + 1)
+        {
+            return 0;
+        }
+    }
+
+    return 1;
 }   
 
 int validar_movimiento(int * tablero , int posicion , char direccion)
 {
-    return 0;
+    int index= 0;
+    int i = 0 ;
+
+    for(i = 0; i < 9 ; i++)
+    {
+        if(posicion == *(tablero + i))
+        {
+            index = i;
+        }
+    }
+
+    if(direccion == 's')
+    {
+        if(index < 3)
+        {
+            return 0;
+        }
+        else
+        {
+            return 1;
+        }
+    }
+    else if(direccion == 'b')
+    {
+        if(index > 5)
+        {
+            return 0;
+        }
+        else
+        {
+            return 1;
+        }
+    }
+    else if(direccion == 'd')
+    {
+        if(index == 2 || index == 5 || index == 8)
+        {
+            return 0;
+        }
+        else
+        {
+            return 1;
+        }
+    }
+    else
+    {
+        if(index == 0 || index == 3 || index == 6)
+        {
+            return 0;
+        }
+        else
+        {
+            return 1;
+        }
+    }
 }
 
 void mostrar_tablero(int * tablero)
@@ -38,6 +102,46 @@ void intercambiar_fichas(int * a , int * b)
     aux_var = *a;
     *a = *b;
     *b = aux_var;
+}
+
+void intercambiar_fichas_user(int * tablero ,int ficha , char sentido)
+{
+    int i = 0;
+    int index = 0;
+    int aux = 0;
+
+    for(i = 0; i < 9 ; i++)
+    {
+        if(ficha == *(tablero + i))
+        {
+            index = i;
+        }
+    }
+
+    if(sentido == 's')
+    {
+        aux = *(tablero + index);
+        *(tablero + index) = *(tablero + index - 3);
+        *(tablero + index - 3) = aux;
+    }
+    else if(sentido == 'b')
+    {
+        aux = *(tablero + index);
+        *(tablero + index) = *(tablero + index + 3);
+        *(tablero + index + 3) = aux;
+    }
+    else if(sentido == 'd')
+    {
+        aux = *(tablero + index);
+        *(tablero + index) = *(tablero + index + 1);
+        *(tablero + index + 1) = aux;
+    }
+    else
+    {
+        aux = *(tablero + index);
+        *(tablero + index) = *(tablero + index - 1);
+        *(tablero + index - 1) = aux;
+    }
 }
 
 void desordenar_tablero(int * tablero)
@@ -128,31 +232,55 @@ int jugar(int * tablero)
 {
     int ficha = 1;
     char destino = 's';
+    int ganador = 0;
 
     while(ficha)
     {
         printf("\nSeleccione la ficha a mover:\n-->");
-        scanf(%d , &ficha);
+        scanf("%d" , &ficha);
 
         while(ficha > 8 || ficha < 0)
         {
             printf("\nError. Seleccione la ficha a mover:\n-->");
-            scanf(%d , &ficha);
+            scanf("%d" , &ficha);
         }
 
-        printf("\nSeleccione el sentido a mover la ficha:\n-->");
-        scanf(%c , &destino);
-
-        while(destino != 's' && destino != 'b' && destino != 'd' && destino != 'i')
+        if(ficha != 0)
         {
-            printf("\nError. Seleccione el sentido a mover la ficha:\n-->");
-            scanf(%d , &destino);
+            getc(stdin);
+            printf("\nSeleccione el sentido a mover la ficha:\n-->");
+            scanf("%c" , &destino);
+
+            while(destino != 's' && destino != 'b' && destino != 'd' && destino != 'i')
+            {
+                printf("\nError. Seleccione el sentido a mover la ficha:\n-->");
+                scanf("%c" , &destino);
+            }
+
+            if(validar_movimiento(tablero , ficha ,destino))
+            {
+                intercambiar_fichas_user(tablero , ficha , destino);
+
+                printf("\n\n");
+                mostrar_tablero(tablero);
+
+                if(verificador_posicion(tablero))
+                {
+                    ficha = 0;
+                    ganador = 1;
+                }
+            }
+            else
+            {
+                printf("\n\nError. Movimiento invalido\n");
+            }
         }
 
-        if(validar_movimiento(tablero , &ficha , &destino))
-        {
-            intercambiar_fichas((tablero + (ficha - 1)) , (tablero + (ficha - 1)))
-        }
+    }
+
+    if(ganador)
+    {
+        printf("\n\n-------------------------------------------------\nFELICITACIONES A GANADO EL JUEGO!\n\n");
     }
 
     return 0;
