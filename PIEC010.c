@@ -38,6 +38,10 @@ int validar_movimiento(int * tablero , int posicion , char direccion)
         }
         else
         {
+            if(*(tablero + index - 3) != 0)
+            {
+                return 0;
+            }
             return 1;
         }
     }
@@ -49,6 +53,10 @@ int validar_movimiento(int * tablero , int posicion , char direccion)
         }
         else
         {
+            if(*(tablero + index + 3) != 0)
+            {
+                return 0;
+            }
             return 1;
         }
     }
@@ -60,6 +68,10 @@ int validar_movimiento(int * tablero , int posicion , char direccion)
         }
         else
         {
+            if(*(tablero + index + 1) != 0)
+            {
+                return 0;
+            }
             return 1;
         }
     }
@@ -71,6 +83,10 @@ int validar_movimiento(int * tablero , int posicion , char direccion)
         }
         else
         {
+            if(*(tablero + index - 1) != 0)
+            {
+                return 0;
+            }
             return 1;
         }
     }
